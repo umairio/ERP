@@ -18,3 +18,81 @@ psycopg2-binary = "^2.9.10"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+###
+[tool.ruff]
+line-length = 120
+target-version = 'py310'
+src = [
+  'erp',
+]
+exclude = [
+  'venv',
+  'env',
+  'migrations',
+  'pycache',
+]
+extend-exclude = [
+  'erp/asgi.py',
+  'erp/wsgi.py',
+  '**/__init__.py',
+  '**/apps.py',
+]
+
+[tool.ruff.lint]
+select = [
+  'E',     # pycodestyle (errors)
+  'F',     # pyflakes
+  'I',     # isort (import sorting)
+  'TID',   # tidy import
+  'N',     # pep8-naming
+  'B',     # flake8-bugbear
+  'A',     # flake8-builtins
+  'UP',    # pyupgrade
+#  'C4',    # flake8-comprehensions # todo: required a manual refactoring
+#  'SIM',   # simplify  todo: required a manual refactoring
+#  'DJ',    # django-specific rules todo: required a lot of migrations
+]
+ignore = [
+  'SIM108',  # Allow if/else blocks even when ternary expressions could replace them — sometimes ternaries hurt readability
+  'DJ001',   # Allow Django models without a `class Meta:` — not every model needs extra Meta options
+  'B904',    # Don't force using `raise ... from err` for exception chaining — sometimes simpler exceptions are fine
+]
+fixable = ['ALL']
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+'**/tests/*.py' = [
+  'E501',  # Ignore long lines in tests — test names or data often exceed 100-120 chars
+  'N802',  # Ignore function names not being snake_case
+  'F841',  # Ignore variable is assigned to but never used
+  'F403',  # Allow `from module import *`
+  'F405',  # Allow `from module import *`
+]
+'**/settings/*.py' = [
+  'F401',  # Ignore unused imports
+  'E402',  # Allow imports not at the top of the file
+  'F403',  # Allow `from module import *`
+  'F405',  # Allow `from module import *`
+  'E501',  # Ignore long lines in settings
+]
+'**/error_messages.py' = [
+  'E501',  # Ignore long lines — error message strings can naturally be very long
+]
+
+[tool.ruff.format]
+quote-style = 'single'
+indent-style = 'space'
+
+[tool.ruff.lint.isort]
+known-first-party = [
+  'users',
+]
+known-third-party = ['celery', ]
+section-order = ['standard-library', 'third-party', 'first-party']
+combine-as-imports = true
+force-wrap-aliases = true
+force-single-line = false
+lines-after-imports = 2
+order-by-type = true
+force-sort-within-sections = true
