@@ -20,14 +20,11 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_object(self):
-        return self.request.user
-    
-    def update(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = self.get_serializer(self.object, data=request.data)
+    def update(self, request):
+        user = self.request.user
+        serializer = self.get_serializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.object.set_password(serializer.validated_data['new_password'])
-        self.object.save()
-        return Response({"detail": "Password changed successfully."}, status=status.HTTP_200_OK)    
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+        return Response({"detail": "Password changed successfully."}, status=status.HTTP_201_CREATED)    
 

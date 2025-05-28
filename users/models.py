@@ -5,11 +5,12 @@ from django.utils.translation import gettext_lazy as _
 
 from users.managers import UserManager
 from users.config import Role
+from erp.models import TimeStamp
 
-class User(AbstractUser):
+
+class User(AbstractUser, TimeStamp):
     username = None
     email = models.EmailField(_("email"), max_length=254, unique=True)
-
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()
@@ -18,7 +19,7 @@ class User(AbstractUser):
         return self.email
 
 
-class Profile(models.Model):
+class Profile(TimeStamp):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(
